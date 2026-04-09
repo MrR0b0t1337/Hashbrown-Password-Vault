@@ -16,7 +16,7 @@ class App(ctk.CTk):
         #First need to create a way to exit the app.
 
         label = ctk.CTkLabel(self, text="Welcome to Hashbrown Password Vault!", font=ctk.CTkFont(size=24, weight="bold"))
-        label.grid(row=0, column=0, columnspan=2, pady=20)
+        label.grid(row=0, column=0, columnspan=2, pady=20)  
 
 class Frame(ctk.CTkFrame):
     def __init__(self, parent, title):

@@ -1,0 +1,6 @@
+It seems that frame navigation via the FrameNavigation Class and tk.raise() may be a good option.
+The only thing is that I'm not sure if I like having a big, persistent navigation panel
+on the side of the app screen. I had envisioned a GUI with separate, different screens
+and perhaps a dropdown menu allowing the user to select their desired screen. Of course,
+this may well still be possible, might just have to tinker with the NavigationClass/tk.raise() method
+

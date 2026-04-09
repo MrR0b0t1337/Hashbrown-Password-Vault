@@ -306,27 +306,166 @@
 #     app = MainApp()
 #     app.mainloop()
     ##########################################################################
-import tkinter
+# import tkinter
 
 
-root = tkinter.Tk()
-root.geometry("1920x1080")
-root.title("main")
+# root = tkinter.Tk()
+# root.geometry("1920x1080")
+# root.title("main")
 
-l = tkinter.Label(root, text = "This is root window")
+# l = tkinter.Label(root, text = "This is root window")
 
-top = tkinter.Toplevel()
-top.geometry("1920x1080")
-top.title("toplevel")
-l2 = tkinter.Label(top, text = "This is toplevel window")
+# top = tkinter.Toplevel()
+# top.geometry("1920x1080")
+# top.title("toplevel")
+# l2 = tkinter.Label(top, text = "This is toplevel window")
 
-l.pack()
-l2.pack()
+# l.pack()
+# l2.pack()
 
-top.mainloop()
+# top.mainloop()
 
 #In theory, this should work for what I need. I would just need to make some sort of navigation system and
 #maybe invoke the destroy() method or whatver so I don't have all these windows open simultaneously?
 
 #It seems that instantiating Tk (root = tkinter.Tk()) not only creates the main or "master" window of the application,
 #but also initializes the entire TKinter framework and starts up the Tcl intepreter under the hood.
+#############################################################################
+#Starter Code for Tutorial
+
+# import customtkinter as ctk
+
+# #Modes: "System" (standard), "Dark", "Light"
+# ctk.set_appearance_mode("System")
+
+# #Themes: "blue"(standard), "green", "dark-blue"
+# ctk.set_default_color_theme("blue")
+
+# class App(ctk.CTk):
+#     def __init__(self):
+#         super().__init__()
+
+#         #Window/App Customziation
+#         self.geometry("1000x500")
+#         self.title("Starter Code Example")
+
+#         #Grid Configuration
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_rowconfigure(0, weight=1)
+#         self.grid_rowconfigure(1, weight=1)
+
+#         #Widgets
+#         label = ctk.CTkLabel(
+#             self,
+#             text="Hello, world!",
+#             font=("Arial", 25),
+#             anchor="center"
+#         )
+
+#         button = ctk.CTkButton(self, text="Click Me!")
+
+#         #Placing Widgets
+#         label.grid(row=0, column=0)
+#         button.grid(row=1, column=0)
+
+# app = App()
+# app.mainloop()
+
+#################################################
+import customtkinter as ctk
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("dark-blue")
+
+class App(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.geometry("1000x500")
+        self.title("More Complex UI Tutorial")
+
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.navigation = NavigationFrame(self, controller=self)
+        self.navigation.grid(row=0, column=0, sticky="esw")#, rowspan=self.winfo_width())
+
+        self.frame2 = Frame2(self, controller=self)
+        self.frame1 = Frame1(self, controller=self)
+        self.frame1.grid(row=1, column=0, sticky="nesw")
+        self.frame2.grid(row=1, column=0, sticky="nesw")
+
+class Frame1(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        title = ctk.CTkLabel(self,
+                             text="Frame 1",
+                             anchor="center")
+        title.grid(row=0, column=0)
+
+class Frame2(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        title = ctk.CTkLabel(self,
+                                text="Frame 2",
+                                anchor="center")
+        title.grid(row=0, column=0)
+
+class NavigationFrame(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(fg_color="#5C5F70")
+        
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
+        title = ctk.CTkLabel(self,
+                             text="Navigation",
+                             anchor="center", 
+                             font=("Helvetica", 25, "bold"))
+        title.grid(row=0, column=1, sticky="ew", pady=10)
+
+        test1 = ctk.CTkButton(self,
+                              text="Frame 1",
+                              anchor="center",
+                              fg_color="transparent",
+                              border_color="#000000",
+                              border_width=3,
+                              command=self.one_event)
+        test1.grid(row=1, column=0, padx=5, pady=5)
+
+        test2 = ctk.CTkButton(self,
+                              text="Frame 2",
+                              anchor="center",
+                              fg_color="transparent",
+                              border_color="#000000",
+                              border_width=3,
+                              command=self.two_event)
+        test2.grid(row=1, column=2, padx=5, pady=5)
+
+    # def one_event(self):
+    #         print("Frame 1 button clicked!")
+
+    # def two_event(self):
+    #         print("Frame 2 button clicked!")
+    
+    def one_event(self):
+        self.controller.frame1.tkraise()
+
+    def two_event(self):
+        self.controller.frame2.tkraise()
+
+
+
+app = App()
+app.mainloop()
