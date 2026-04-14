@@ -4,3 +4,7 @@ on the side of the app screen. I had envisioned a GUI with separate, different s
 and perhaps a dropdown menu allowing the user to select their desired screen. Of course,
 this may well still be possible, might just have to tinker with the NavigationClass/tk.raise() method
 
+Seems that the place() method is better than grid() when you want to specify dimensions of a widget.
+Allows for fractional resizing based on window size, i.e. the height of the frame is 10% the height
+of the window.
+
