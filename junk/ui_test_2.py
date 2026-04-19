@@ -372,100 +372,100 @@
 # app.mainloop()
 
 #################################################
-import customtkinter as ctk
+# import customtkinter as ctk
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
+# ctk.set_appearance_mode("dark")
+# ctk.set_default_color_theme("dark-blue")
 
-class App(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+# class App(ctk.CTk):
+#     def __init__(self):
+#         super().__init__()
 
-        self.geometry("1000x500")
-        self.title("More Complex UI Tutorial")
+#         self.geometry("1000x500")
+#         self.title("More Complex UI Tutorial")
 
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_columnconfigure(0, weight=1)
+#         self.grid_rowconfigure(0, weight=0)
+#         self.grid_columnconfigure(0, weight=1)
 
-        self.navigation = NavigationFrame(self, controller=self)
-        self.navigation.grid(row=0, column=0, sticky="esw")#, rowspan=self.winfo_width())
+#         self.navigation = NavigationFrame(self, controller=self)
+#         self.navigation.grid(row=0, column=0, sticky="esw")#, rowspan=self.winfo_width())
 
-        self.frame2 = Frame2(self, controller=self)
-        self.frame1 = Frame1(self, controller=self)
-        self.frame1.grid(row=1, column=0, sticky="nesw")
-        self.frame2.grid(row=1, column=0, sticky="nesw")
+#         self.frame2 = Frame2(self, controller=self)
+#         self.frame1 = Frame1(self, controller=self)
+#         self.frame1.grid(row=1, column=0, sticky="nesw")
+#         self.frame2.grid(row=1, column=0, sticky="nesw")
 
-class Frame1(ctk.CTkFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
+# class Frame1(ctk.CTkFrame):
+#     def __init__(self, parent, controller):
+#         super().__init__(parent)
 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
+#         self.grid_rowconfigure(0, weight=1)
+#         self.grid_columnconfigure(0, weight=1)
 
-        title = ctk.CTkLabel(self,
-                             text="Frame 1",
-                             anchor="center")
-        title.grid(row=0, column=0)
+#         title = ctk.CTkLabel(self,
+#                              text="Frame 1",
+#                              anchor="center")
+#         title.grid(row=0, column=0)
 
-class Frame2(ctk.CTkFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
+# class Frame2(ctk.CTkFrame):
+#     def __init__(self, parent, controller):
+#         super().__init__(parent)
 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
+#         self.grid_rowconfigure(0, weight=1)
+#         self.grid_columnconfigure(0, weight=1)
 
-        title = ctk.CTkLabel(self,
-                                text="Frame 2",
-                                anchor="center")
-        title.grid(row=0, column=0)
+#         title = ctk.CTkLabel(self,
+#                                 text="Frame 2",
+#                                 anchor="center")
+#         title.grid(row=0, column=0)
 
-class NavigationFrame(ctk.CTkFrame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.configure(fg_color="#5C5F70")
+# class NavigationFrame(ctk.CTkFrame):
+#     def __init__(self, parent, controller):
+#         super().__init__(parent)
+#         self.controller = controller
+#         self.configure(fg_color="#5C5F70")
         
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_columnconfigure(1, weight=1)
+#         self.grid_columnconfigure(2, weight=1)
 
-        title = ctk.CTkLabel(self,
-                             text="Navigation",
-                             anchor="center", 
-                             font=("Helvetica", 25, "bold"))
-        title.grid(row=0, column=1, sticky="ew", pady=10)
+#         title = ctk.CTkLabel(self,
+#                              text="Navigation",
+#                              anchor="center", 
+#                              font=("Helvetica", 25, "bold"))
+#         title.grid(row=0, column=1, sticky="ew", pady=10)
 
-        test1 = ctk.CTkButton(self,
-                              text="Frame 1",
-                              anchor="center",
-                              fg_color="transparent",
-                              border_color="#000000",
-                              border_width=3,
-                              command=self.one_event)
-        test1.grid(row=1, column=0, padx=5, pady=5)
+#         test1 = ctk.CTkButton(self,
+#                               text="Frame 1",
+#                               anchor="center",
+#                               fg_color="transparent",
+#                               border_color="#000000",
+#                               border_width=3,
+#                               command=self.one_event)
+#         test1.grid(row=1, column=0, padx=5, pady=5)
 
-        test2 = ctk.CTkButton(self,
-                              text="Frame 2",
-                              anchor="center",
-                              fg_color="transparent",
-                              border_color="#000000",
-                              border_width=3,
-                              command=self.two_event)
-        test2.grid(row=1, column=2, padx=5, pady=5)
+#         test2 = ctk.CTkButton(self,
+#                               text="Frame 2",
+#                               anchor="center",
+#                               fg_color="transparent",
+#                               border_color="#000000",
+#                               border_width=3,
+#                               command=self.two_event)
+#         test2.grid(row=1, column=2, padx=5, pady=5)
 
-    # def one_event(self):
-    #         print("Frame 1 button clicked!")
+#     # def one_event(self):
+#     #         print("Frame 1 button clicked!")
 
-    # def two_event(self):
-    #         print("Frame 2 button clicked!")
+#     # def two_event(self):
+#     #         print("Frame 2 button clicked!")
     
-    def one_event(self):
-        self.controller.frame1.tkraise()
+#     def one_event(self):
+#         self.controller.frame1.tkraise()
 
-    def two_event(self):
-        self.controller.frame2.tkraise()
+#     def two_event(self):
+#         self.controller.frame2.tkraise()
 
 
 
-app = App()
-app.mainloop()
+# app = App()
+# app.mainloop()
