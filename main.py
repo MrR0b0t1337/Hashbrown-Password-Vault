@@ -25,9 +25,26 @@ class App(ctk.CTk):
         #have a 'back' button that sends the user back to the
         #main menu.
 
+        #Here is where I instantiate all screens at once and "stack" them
+        #in the same frame. None of these screens are made yet, though.
+        # self.screens = {}
+        # for ScreenClass in (LoginScreen, MainMenu, VaultScreen, PasswordGeneratorScreen, SettingsScreen):
+        #     screen = ScreenClass(parent=container, controller=self)
+        #     self.screens[ScreenClass.__name__] = screen
+        #     screen.grid(row=0, column=0, sticky="nsew")
+
+        
+
+        
+
+        
+
+
+
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
 
 # TODO: Figure out how to implement graphics/gradients, ideally on a project-wide level
+# TODO: Figure out how to force the login screen to be the first screent he user sees
