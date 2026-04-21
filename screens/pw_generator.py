@@ -1,8 +1,8 @@
 import customtkinter as ctk
 
-class pw_generator_screen(ctk.CTkFrame):
+class PWGenerator(ctk.CTkFrame):
     def __init__(self, parent, controller):
-            super().__init__(parent, fg_color="#000000")
+            super().__init__(parent, fg_color="#003FAA")
             self.controller=controller
 
             self.grid_rowconfigure(0, weight=1)
