@@ -12,11 +12,12 @@ class App(ctk.CTk):
         super().__init__()
 
         self.title("Hashbrown Password Vault")
-        # screen_width = self.winfo_screenwidth()
-        # screen_height = self.winfo_screenheight()   
-        # self.geometry(f"{screen_width}x{screen_height}+0+0")
-        # self.attributes("-fullscreen", True)
-        self.geometry("1920x750")
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()   
+        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.attributes("-fullscreen", True)
+        # self.geometry("1920x750")
+        
 
         container = ctk.CTkFrame(self, fg_color="transparent")
         container.pack(fill="both", expand=True)

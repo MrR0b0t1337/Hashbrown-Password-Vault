@@ -6,7 +6,8 @@ class MainMenu(ctk.CTkFrame):
             self.controller=controller
 
             self.grid_rowconfigure(0, weight=1)
-            self.grid_rowconfigure(3, weight=1)
+            self.grid_rowconfigure(6, weight=1)
+
             self.grid_columnconfigure(0, weight=1)
             self.grid_columnconfigure(2, weight=1)
 
@@ -20,6 +21,31 @@ class MainMenu(ctk.CTkFrame):
                   self,
                   text="Choose an option",
                   font=("Helvetica", 25, "bold"),
-                ).grid(row=1, column=1, pady=(0, 12))
+                ).grid(row=2, column=1, pady=(0, 12))
             
+            browse_vault_btn = ctk.CTkButton(
+                  self,
+                  text="Browse Vault",
+                  width=400, height=60,
+                  font=("Helvetica", 20, "bold"),
+                  command=lambda: controller.show_screen("VaultScreen")
+            )
+            browse_vault_btn.grid(row=3, column=1, pady=(0, 12))
+
+            gen_pw_btn = ctk.CTkButton(
+                  self,
+                  text="Generate Password",
+                  width=400, height=60,
+                  font=("Helvetica", 20, "bold"),
+                  command=lambda: controller.show_screen("PWGenerator")
+            )
+            gen_pw_btn.grid(row=4, column=1, pady=(0, 12))
+
+            settings_btn = ctk.CTkButton(
+                  self,
+                  text="Settings",
+                  width=400, height=60,
+                  font=("Helvetica", 20, "bold")
+            )
+            settings_btn.grid(row=5, column=1, pady=(0, 12))
             
