@@ -1,8 +1,5 @@
 import customtkinter as ctk
 
-ctk.set_appearance_mode("system")
-ctk.set_default_color_theme("blue")
-
 class LoginScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, fg_color="#003FAA")
@@ -17,38 +14,40 @@ class LoginScreen(ctk.CTkFrame):
         
         ctk.CTkLabel(
             self,
-            text="Hashbrown Password Vault",
-            font=("Helvetica", 80, "bold")
-        ).grid(row=1, column=1, pady=(0, 40))
+            text="Hashbrown\n Password Vault",
+            font=("Helvetica", 100, "bold")
+        ).grid(row=0, column=1, pady=(0, 60))
 
         ctk.CTkLabel(self,
                      text="Username",
-                     font=("Helvetica", 20)
-        ).grid(row=2, column=1, padx=(0, 300))
-        
+                     font=("Helvetica", 26),
+                     width=560,
+                     anchor="w"
+        ).grid(row=1, column=1, pady=(0, 6))
+
         self.username_entry = ctk.CTkEntry(
             self,
-            width=400, height=50,
+            width=560, height=70,
             placeholder_text="Enter your username",
-            font=("Helvetica", 14)
+            font=("Helvetica", 22)
         )
-        self.username_entry.grid(row=3, column=1, pady=(0, 16))
+        self.username_entry.grid(row=2, column=1, pady=(0, 30))
 
         ctk.CTkLabel(self,
                      text="Master Password",
-                     font=("Helvetica", 20),
-                     width=400,
+                     font=("Helvetica", 26),
+                     width=560,
                      anchor="w"
-        ).grid(row=4, column=1)
+        ).grid(row=3, column=1, pady=(0, 6))
 
         self.password_entry = ctk.CTkEntry(
             self,
-            width=400, height=50,
+            width=560, height=70,
             placeholder_text="Enter your master password",
-            font=("Helvetica", 14),
+            font=("Helvetica", 22),
             show="*"
         )
-        self.password_entry.grid(row=5, column=1, pady=(0, 24))
+        self.password_entry.grid(row=4, column=1, pady=(0, 30))
 
         unlock_vault_btn = ctk.CTkButton(
             self,
@@ -69,7 +68,6 @@ class LoginScreen(ctk.CTkFrame):
 
         self.password_entry.bind("<Return>", lambda _: self.attempt_login())
         self.username_entry.bind("<Return>", lambda _: self.attempt_login())
-
         
     def attempt_login(self):
         username = self.username_entry.get()
@@ -80,4 +78,7 @@ class LoginScreen(ctk.CTkFrame):
             self.controller.show_screen("MainMenu")
         else:
             self.error_label.configure(text="Invalid username or password. Please try again!")
+
+
+    
 

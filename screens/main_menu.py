@@ -45,7 +45,8 @@ class MainMenu(ctk.CTkFrame):
                   self,
                   text="Settings",
                   width=400, height=60,
-                  font=("Helvetica", 20, "bold")
+                  font=("Helvetica", 20, "bold"),
+                  command=lambda: controller.show_screen("SettingsScreen")
             )
             settings_btn.grid(row=5, column=1, pady=(0, 12))
             

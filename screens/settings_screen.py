@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-class PWGenerator(ctk.CTkFrame):
+class SettingsScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
             super().__init__(parent, fg_color="#003FAA")
             self.controller=controller
@@ -12,13 +12,13 @@ class PWGenerator(ctk.CTkFrame):
 
             ctk.CTkLabel(
                   self,
-                  text="Password Generator",
+                  text="Settings",
                   font=("Helvetica", 50, "bold"),
             ).grid(row=1, column=1, pady=(0, 5))
 
             ctk.CTkLabel(
                   self,
-                  text="Create a strong, secure password with custom options",
+                  text="Change settings (i.e. time until timeout, change master password,etc.s)",
                   font=("Helvetica", 20),
                   text_color="gray"
             ).grid(row=2, column=1, pady=(0,20))
