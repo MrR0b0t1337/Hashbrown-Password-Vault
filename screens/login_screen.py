@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from database.db import authenticate_user, open_vault, derive_vault_key
 
 class LoginScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -10,14 +11,16 @@ class LoginScreen(ctk.CTkFrame):
         self.grid_columnconfigure(2, weight=1)
 
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(7, weight=1)
+        self.grid_rowconfigure(8, weight=1)
         
+        #Title Button
         ctk.CTkLabel(
             self,
             text="Hashbrown\n Password Vault",
             font=("Helvetica", 100, "bold")
         ).grid(row=0, column=1, pady=(0, 60))
-
+        
+        #Username Label
         ctk.CTkLabel(self,
                      text="Username",
                      font=("Helvetica", 26),
@@ -25,6 +28,7 @@ class LoginScreen(ctk.CTkFrame):
                      anchor="w"
         ).grid(row=1, column=1, pady=(0, 6))
 
+        #Username Entry Box
         self.username_entry = ctk.CTkEntry(
             self,
             width=560, height=70,
@@ -33,6 +37,7 @@ class LoginScreen(ctk.CTkFrame):
         )
         self.username_entry.grid(row=2, column=1, pady=(0, 30))
 
+        #Master Password Label
         ctk.CTkLabel(self,
                      text="Master Password",
                      font=("Helvetica", 26),
@@ -40,6 +45,7 @@ class LoginScreen(ctk.CTkFrame):
                      anchor="w"
         ).grid(row=3, column=1, pady=(0, 6))
 
+        #Master Password Entry Box
         self.password_entry = ctk.CTkEntry(
             self,
             width=560, height=70,
@@ -49,22 +55,34 @@ class LoginScreen(ctk.CTkFrame):
         )
         self.password_entry.grid(row=4, column=1, pady=(0, 30))
 
+        #Unlock Vault Button
         unlock_vault_btn = ctk.CTkButton(
             self,
             text="Unlock Vault",
-            width=400, height=60,
+            width=560, height=60,
             font=("Helvetica", 20, "bold"),
             command=self.attempt_login
-        )
-        unlock_vault_btn.grid(row=6, column=1)
+        ).grid(row=5, column=1, pady=(0, 16))
 
+        ctk.CTkButton(
+            self,
+            text="New user? Create an account.",
+            width=560, height=40,
+            font=("Helvetica", 18),
+            fg_color="transparent",
+            hover_color="#004FCC",
+            text_color="#AACCFF",
+            command=lambda: controller.show_screen("CreateAccountScreen"),
+        ).grid(row=6, column=1, pady=(0, 8))
+
+        #Error Label, blank by default
         self.error_label = ctk.CTkLabel(
             self,
             text="",
             text_color="#FF8800",
             font=("Helvetica", 30)
         )
-        self.error_label.grid(row=7, column=1, pady=(0, 12))
+        self.error_label.grid(row=7, column=1)
 
         self.password_entry.bind("<Return>", lambda _: self.attempt_login())
         self.username_entry.bind("<Return>", lambda _: self.attempt_login())
@@ -73,12 +91,26 @@ class LoginScreen(ctk.CTkFrame):
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        if username == "brady" and password == "password":
-            self.error_label.configure(text="")
-            self.controller.show_screen("MainMenu")
-        else:
-            self.error_label.configure(text="Invalid username or password. Please try again!")
+        if not username or not password:
+            self.error_label.configure(text="Please enter your username and password")
+            return
+        
+        result = authenticate_user(username, password)
 
+        if not result["success"]:
+            self.error_label.configure(text=result["error"])
+            return
+        
+        hex_key = result["enc_key_salt"]
+        encryption_key = derive_vault_key(password, hex_key)
+        vault_conn = open_vault(username, password, hex_key)
 
-    
+        self.controller.current_user = username
+        self.controller.vault_conn = vault_conn
+        self.controller.encryption_key = encryption_key
 
+        self.username_entry.delete(0, "end")
+        self.password_entry.delete(0, "end")
+        self.error_label.configure(text="")
+
+        self.controller.show_screen("MainMenu")

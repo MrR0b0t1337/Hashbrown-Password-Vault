@@ -4,7 +4,6 @@ import secrets
 import hashlib
 from datetime import datetime, timezone
 
-import argon2
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError, InvalidHashError, VerificationError
 import sqlcipher3.dbapi2 as sqlcipher
@@ -202,9 +201,9 @@ def open_vault(username: str, master_password: str, enc_key_salt: str):
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn
 
-def add_credentials(vault_conn, service_name: str, login_username:str,
+def add_credential(vault_conn, service_name: str, login_username:str,
                     plaintext_password: str, encryption_key: bytes) -> dict:
-    from crypto.crypto import encrypt_password
+    from database.crypto import encrypt_password
 
     encrypted, iv = encrypt_password(plaintext_password, encryption_key)
     now = _now()
@@ -242,13 +241,13 @@ def get_all_credentials(vault_conn) -> list[dict]:
 
 def get_credential(vault_conn, credential_id: int,
                    encryption_key: bytes) -> dict | None:
-    from crypto.crypto import decrypt_password
+    from database.crypto import decrypt_password
 
     row = vault_conn.execute("""
         SELECT credential_id, service_name, login_username,
                encrypted_password, encryption_iv, created_at, updated_at
         FROM credentials WHERE credential_id = ?
-    """, (credential_id)).fetchone()
+    """, (credential_id,)).fetchone()
 
     if not row:
         return None
@@ -260,14 +259,14 @@ def get_credential(vault_conn, credential_id: int,
         "credential_id": row[0],
         "service_name": row[1],
         "login_username": row[2],
-        "password": row[3],
+        "password": plaintext,
         "created_at": row[5],
         "updated_at": row[6]
     }
 
 def update_credential(vault_conn, credential_id: int, service_name: str, login_username: str,
                       plaintext_password: str, encryption_key: bytes) -> dict:
-    from crypto.crypto import encrypt_password
+    from database.crypto import encrypt_password
 
     encrypted, iv = encrypt_password(plaintext_password, encryption_key)
 
@@ -284,7 +283,7 @@ def update_credential(vault_conn, credential_id: int, service_name: str, login_u
 
 
 def delete_credential(vault_conn, credential_id: int, service_name: str) -> dict:
-    vault_conn.execute("DELETE FROM credentials WHERE credential_id = ?", (credential_id))
+    vault_conn.execute("DELETE FROM credentials WHERE credential_id = ?", (credential_id,))
     vault_conn.commit()
 
     _write_audit(vault_conn, "CREDENTIAL_DELETED", f"Deleted entry for {service_name}")
@@ -297,3 +296,7 @@ def _write_audit(vault_conn, event_type: str, event_detail: str = None) -> None:
         VALUES (?, ?, ?)
     """, (event_type, event_detail, _now()))
     vault_conn.commit()
+
+def derive_vault_key(master_password: str, enc_key_salt: str) -> bytes:
+    hex_key = _derive_encryption_key(master_password, enc_key_salt)
+    return bytes.fromhex(hex_key)
