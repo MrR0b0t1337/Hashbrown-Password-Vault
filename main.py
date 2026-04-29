@@ -17,11 +17,11 @@ class App(ctk.CTk):
         init_users_db()
 
         self.title("Hashbrown Password Vault")
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()   
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.attributes("-fullscreen", True)
-        # self.geometry("1920x750")
+        # screen_width = self.winfo_screenwidth()
+        # screen_height = self.winfo_screenheight()   
+        # self.geometry(f"{screen_width}x{screen_height}+0+0")
+        # self.attributes("-fullscreen", True)
+        self.geometry("960x540")
 
         self.current_user = None
         self.vault_conn = None
@@ -34,7 +34,7 @@ class App(ctk.CTk):
         container.grid_columnconfigure(0, weight=1)
 
         self.screens = {}
-        for ScreenClass in (LoginScreen, MainMenu, PWGenerator, VaultScreen, SettingsScreen, CreateAccountScreen):
+        for ScreenClass in (LoginScreen, CreateAccountScreen, MainMenu, PWGenerator, VaultScreen, SettingsScreen):
             screen = ScreenClass(parent=container, controller=self)
             self.screens[ScreenClass.__name__] = screen
             screen.grid(row=0, column=0, sticky="nsew")

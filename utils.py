@@ -12,7 +12,7 @@ def calculate_entropy(password: str) -> float:
         pool+= 26
     if re.search(r'[0-9]', password):
         pool += 10
-    if re.search(r'[^a-zA-z0-9]', password):
+    if re.search(r'[^a-zA-Z0-9]', password):
         pool += 32
     
     if pool == 0:

@@ -25,8 +25,10 @@ class SettingsScreen(ctk.CTkFrame):
 
             ctk.CTkButton(
             self,
-            text="Back to Main Menu",
-            width=400, height=60,
-            font=("Helvetica", 20, "bold"),
+            text="← Main Menu",
+            width=160, height=40,
+            font=("Helvetica", 14),
+            fg_color="transparent",
+            border_width=1,
             command=lambda: self.controller.show_screen("MainMenu")
-            ).grid(row=3, column=1, pady=(0, 12))
+            ).place(x=20, rely=1.0, y=-20, anchor="sw")

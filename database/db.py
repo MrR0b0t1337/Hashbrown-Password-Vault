@@ -151,6 +151,8 @@ def _init_vault(username: str, master_password: str, enc_key_salt: str) -> None:
         conn.execute(f"PRAGMA key = \"x'{key}'\";")
         conn.execute("PRAGMA cipher_page_size = 4096;")
         conn.execute("PRAGMA kdf_iter = 64000;")
+        conn.execute("PRAGMA foreign_keys = ON;")
+
 
         conn.execute("""
            CREATE TABLE IF NOT EXISTS credentials (

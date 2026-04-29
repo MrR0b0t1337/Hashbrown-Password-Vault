@@ -56,7 +56,7 @@ class LoginScreen(ctk.CTkFrame):
         self.password_entry.grid(row=4, column=1, pady=(0, 30))
 
         #Unlock Vault Button
-        unlock_vault_btn = ctk.CTkButton(
+        ctk.CTkButton(
             self,
             text="Unlock Vault",
             width=560, height=60,
