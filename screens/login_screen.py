@@ -113,4 +113,6 @@ class LoginScreen(ctk.CTkFrame):
         self.password_entry.delete(0, "end")
         self.error_label.configure(text="")
 
+        self.controller.start_lock_timer()
+
         self.controller.show_screen("MainMenu")

@@ -49,4 +49,14 @@ class MainMenu(ctk.CTkFrame):
                   command=lambda: controller.show_screen("SettingsScreen")
             )
             settings_btn.grid(row=5, column=1, pady=(0, 12))
+
+            ctk.CTkButton(
+                  self,
+                  text="Log Out",
+                  width=400, height=60,
+                  font=("Helvetica", 20, "bold"),
+                  fg_color="transparent",
+                  border_width=1,
+                  command=lambda: controller.logout()
+            ).grid(row=6, column=1, pady=(0, 12))
             

@@ -33,11 +33,12 @@ class VaultScreen(ctk.CTkFrame):
         #Add button sits in the top-right corner of the left panel
         ctk.CTkButton(
             left,
-            text="+ Add",
+            text="Add +",
             width=90, height=34,
             font=("Helvetica", 14, "bold"),
             command=self._show_form
         ).place(relx=1.0, x=-20, y=20, anchor="ne")
+
         #Search bar filters the list in real time as the user types
         self.search_var = ctk.StringVar()
         self.search_var.trace_add("write", self._refresh_list)
@@ -48,12 +49,14 @@ class VaultScreen(ctk.CTkFrame):
             width=460, height=44,
             textvariable=self.search_var
         ).grid(row=1, column=0, padx=20, pady=(0, 10))
+
         #Scrollable login list
         self.login_list = ctk.CTkScrollableFrame(left, fg_color="transparent")
         self.login_list.grid(row=2, column=0, sticky="nesw", padx=8)
 
         #Right Panel
-        #This frame is the container. It holds:
+
+        #This frame holds:
         #-self.detail_panel, which shows the credential details/placeholder
         #-self.form_panel, which shows the add/edit form
         #We swap between them using tkraise(), same pattern as rest of the screens
@@ -101,6 +104,7 @@ class VaultScreen(ctk.CTkFrame):
         rows = get_all_credentials(self.controller.vault_conn)
 
         query = self.search_var.get().lower()
+        
         if query:
             rows = [
                 r for r in rows
@@ -337,11 +341,11 @@ class VaultScreen(ctk.CTkFrame):
         ctk.CTkLabel(
             self.form_panel,
             text="Service Name *",
-            font=("Helvetica", 14),
+            font=("Helvetica", 20),
             anchor="w"
         ).pack(anchor="w")
 
-        name_entry = ctk.CTkEntry(self.form_panel, height=42)
+        name_entry = ctk.CTkEntry(self.form_panel, height=54, font=("Helvetica", 18))
         if is_edit:
             name_entry.insert(0, entry["service_name"])
         name_entry.pack(fill="x", pady=(4, 14))
@@ -350,11 +354,11 @@ class VaultScreen(ctk.CTkFrame):
         ctk.CTkLabel(
             self.form_panel,
             text="Username/Email",
-            font=("Helvetica", 14),
+            font=("Helvetica", 20),
             anchor="w"
         ).pack(anchor="w")
 
-        username_entry = ctk.CTkEntry(self.form_panel, height=42)
+        username_entry = ctk.CTkEntry(self.form_panel, height=54, font=("Helvetica", 18))
         if is_edit:
             username_entry.insert(0,entry["login_username"] or "")
         username_entry.pack(fill="x", pady=(4, 14))
@@ -363,7 +367,7 @@ class VaultScreen(ctk.CTkFrame):
         ctk.CTkLabel(
             self.form_panel,
             text="Password",
-            font=("Helvetica", 14),
+            font=("Helvetica", 20),
             anchor="w"
         ).pack(anchor="w")
 
@@ -371,7 +375,7 @@ class VaultScreen(ctk.CTkFrame):
         pw_row.pack(fill="x", pady=(4, 14))
         pw_row.grid_columnconfigure(0, weight=1)
 
-        pw_entry = ctk.CTkEntry(pw_row, height=42, show="*")
+        pw_entry = ctk.CTkEntry(pw_row, height=54, font=("Helvetica", 18), show="*")
         if is_edit:
             pw_entry.insert(0, entry["password"])
         pw_entry.grid(row=0, column=0, sticky="ew")
@@ -480,22 +484,31 @@ class VaultScreen(ctk.CTkFrame):
 
 
 ### Delete Confirmation Popup Window ###
-### This is not currently working ###
+
+#Working now but I would like to make sure it pops up in the middle of the screen
 
     def _confirm_delete(self, entry: dict):
+
         popup = ctk.CTkToplevel(self)
         popup.title("Confirm Delete")
-        popup.geometry("400x180")
         popup.resizable(False, False)
+        popup.update()
+
+        popup_width = 400
+        popup_height = 180
+        screen_width = popup.winfo_screenmmwidth()
+        screen_height = popup.winfo_screenheight()
+        x = (screen_width // 2) - (popup_width // 2)
+        y = (screen_height // 2) - (popup_height // 2)
+        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
 
         popup.grab_set()
         popup.focus_force()
 
         ctk.CTkLabel(
             popup,
-            text="Are you sure you wish to delete this credential?\n" \
-            "This operation cannot be undone.",
-            font=("Helvetica", 13),
+            text=f"Delete \"{entry['service_name']}\"?",
+            font=("Helvetica", 18, "bold"),
             text_color="gray"
         ).pack(pady=(0, 20))
 

@@ -17,17 +17,27 @@ class App(ctk.CTk):
         init_users_db()
 
         self.title("Hashbrown Password Vault")
-        # screen_width = self.winfo_screenwidth()
-        # screen_height = self.winfo_screenheight()   
-        # self.geometry(f"{screen_width}x{screen_height}+0+0")
-        # self.attributes("-fullscreen", True)
-        self.geometry("960x540")
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()   
+        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.attributes("-fullscreen", True)
+        # self.geometry("960x540")
 
         self.current_user = None
         self.vault_conn = None
         self.encryption_key = None
-        
 
+        #Default timeout (in milliseconds), equivalent to 5 minutes.
+        #Set to 'None' to disable auto-lock entirely.
+        self.lock_after_ms = 5 * 60 * 1000
+
+        #Holds the pending after() call ID so we can
+        #cancel and restart it on every activity event.
+        self._lock_timer_id = None
+
+        self.bind_all("<Motion>", self._reset_lock_timer)
+        self.bind_all("<KeyPress>", self._reset_lock_timer)
+        
         container = ctk.CTkFrame(self, fg_color="transparent")
         container.pack(fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
@@ -47,7 +57,10 @@ class App(ctk.CTk):
     def show_screen(self, name: str):
         self.screens[name].tkraise()
 
+    #Clear session, stop lock timer, return to Login Screen
     def logout(self):
+        self._stop_lock_timer()
+
         if self.vault_conn:
             self.vault_conn.close()
         
@@ -57,10 +70,55 @@ class App(ctk.CTk):
 
         self.show_screen("LoginScreen")
 
+    #Cleanly stop timer, close vault, destroy window
     def _on_closing(self):
+        self._stop_lock_timer()
+
         if self.vault_conn:
             self.vault_conn.close()
         self.destroy()
+    
+    #Called by LoginScreen after a successful login.
+    #Kicks off the inactivity countdown for the first time.
+    def start_lock_timer(self):
+        self._reset_lock_timer()
+
+    #Cancel the existing timer and start a fresh one.
+    #Fires automatically on every mouse movement or key press
+    #via bind_all() above. Does nothing if no user is logged in,
+    #so the timer never runs on the login or create account screens.
+    def _reset_lock_timer(self, event=None):
+        if not self.current_user:
+            return
+        if self._lock_timer_id:
+            self.after_cancel(self._lock_timer_id)
+        if self.lock_after_ms is not None:
+            self._lock_timer_id = self.after(
+                self.lock_after_ms,
+                self._auto_lock
+            )
+
+    #Cancel any pending lock timer
+    def _stop_lock_timer(self):
+        if self._lock_timer_id:
+            self.after_cancel(self._lock_timer_id)
+            self._lock_timer_id = None
+
+    #Called when the inactivity timer fires. Logs the user out.
+    def _auto_lock(self):
+        if self.current_user:
+            self.logout()
+
+    #Called by SettingsScreen when the user picks a new timeout.
+    #'None' to disable auto-lock entirely.
+    def set_lock_timeout(self, minutes):
+        if minutes is None:
+            self.lock_after_ms = None
+            self._stop_lock_timer()
+        else:
+            self.lock_after_ms = minutes * 60 * 1000
+            self._reset_lock_timer()
+
         
 if __name__ == "__main__":
     app = App()

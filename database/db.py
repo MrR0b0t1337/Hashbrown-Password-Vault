@@ -302,3 +302,52 @@ def _write_audit(vault_conn, event_type: str, event_detail: str = None) -> None:
 def derive_vault_key(master_password: str, enc_key_salt: str) -> bytes:
     hex_key = _derive_encryption_key(master_password, enc_key_salt)
     return bytes.fromhex(hex_key)
+
+#1. Verify the current password against user.db
+#2. Re-hash the new password and generate a fresh enc_key_salt
+#3. Derive the new encryption key and call PRAGMA rekey on the vault
+#file, thus re-encrypting the entire file in place with the new key.
+#4. Update user.db with the new hash and new enc_key_salt
+
+#Returns dict with 'success' (bool) and 'error' (str or None), and on success,
+#'new_enc_key_salt' so the caller can update the session.
+def change_master_password(username: str, current_password: str, 
+                           new_password: str, vault_conn) -> dict:
+    
+    with sqlite3.connect(USERS_DB) as conn:
+        row = conn.execute("""
+            SELECT user_id, master_hash, enc_key_salt
+            FROM users WHERE username = ?
+                           """, (username,)).fetchone()
+    if not row:
+        return {"success": False, "error": "User not found.", "new_enc_key_salt": None}
+    
+    user_id, master_hash, old_enc_key_salt = row
+
+    try:
+        _hasher.verify(master_hash, current_password)
+    except (VerifyMismatchError, VerificationError, InvalidHashError):
+        return {"success": False, "error": "Current password is incorrect.", "new_enc_key_salt": None}
+    
+    new_master_hash = _hasher.hash(new_password)
+    new_enc_key_salt = secrets.token_hex(32)
+    new_key = _derive_encryption_key(new_password, new_enc_key_salt)
+
+    try:
+        vault_conn.execute(f"PRAGMA rekey = \"x'{new_key}'\";")
+    except Exception as e:
+        return {"success": False, "error": f"Vault rekey failed: {e}", "new_enc_key_salt": None}
+    
+    with sqlite3.connect(USERS_DB) as conn:
+        conn.execute("""
+            UPDATE users
+            SET master_hash = ?, enc_key_salt = ?, updated_at = ?
+            WHERE user_id = ?
+        """, (new_master_hash, new_enc_key_salt, _now(), user_id))
+        conn.commit()
+
+    _write_audit(vault_conn, "PASSWORD_CHANGED", "Master password changed successfully!")
+
+    return {"success": True, "error": None, "new_enc_key_salt": new_enc_key_salt}
+
+    
