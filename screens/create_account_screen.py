@@ -4,7 +4,7 @@ from utils import calculate_entropy, get_strength_label, validate_password
 
 class CreateAccountScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
-        super().__init__(parent, fg_color="#003FAA")
+        super().__init__(parent, fg_color="#142F9B")
         self.controller = controller
 
         self.grid_columnconfigure(0, weight=1)
@@ -46,14 +46,28 @@ class CreateAccountScreen(ctk.CTkFrame):
             anchor="w"
         ).grid(row=3, column=1, pady=(0, 6))
 
+        pw_row = ctk.CTkFrame(self, fg_color="transparent")
+        pw_row.grid(row=4, column=1, pady=(0, 6))
+
         self.password_entry = ctk.CTkEntry(
-            self,
-            width=560, height=70,
+            pw_row,
+            width=480, height=70,
             placeholder_text="Enter your desired master password",
             font=("Helvetica", 22),
             show="*"
         )
-        self.password_entry.grid(row=4, column=1, pady=(0,6))
+        self.password_entry.grid(row=0, column=0)
+
+        self.pw_show_btn = ctk.CTkButton(
+            pw_row,
+            text="Show",
+            width=80, height=70,
+            font=("Helvetica", 16),
+            fg_color="transparent",
+            border_width=1,
+            command=lambda: self._toggle_entry(self.password_entry, self.pw_show_btn)
+        )
+        self.pw_show_btn.grid(row=0, column=1, padx=(8, 0))
 
         self.strength_label = ctk.CTkLabel(
             self,
@@ -71,14 +85,28 @@ class CreateAccountScreen(ctk.CTkFrame):
             anchor="w"
         ).grid(row=6, column=1, pady=(0, 6))
 
+        confirm_row = ctk.CTkFrame(self, fg_color="transparent")
+        confirm_row.grid(row=7, column=1, pady=(0, 24))
+
         self.confirm_entry = ctk.CTkEntry(
-            self,
-            width=560, height=70,
+            confirm_row,
+            width=480, height=70,
             placeholder_text="Re-enter your master password",
             font=("Helvetica", 22),
             show="*"
         )
-        self.confirm_entry.grid(row=7, column=1, pady=(0, 24))
+        self.confirm_entry.grid(row=0, column=0)
+
+        self.confirm_show_btn = ctk.CTkButton(
+            confirm_row,
+            text="Show",
+            width=80, height=70,
+            font=("Helvetica", 16),
+            fg_color="transparent",
+            border_width=1,
+            command=lambda: self._toggle_entry(self.confirm_entry, self.confirm_show_btn)
+        )
+        self.confirm_show_btn.grid(row=0, column=1, padx=(8, 0))
 
         self.error_label = ctk.CTkLabel(
             self,
@@ -110,6 +138,15 @@ class CreateAccountScreen(ctk.CTkFrame):
             ).grid(row=10, column=1)
         
         self.password_entry.bind("<KeyRelease>", self._update_strength)
+
+
+    def _toggle_entry(self, entry, btn):
+        if entry.cget("show") == "*":
+            entry.configure(show="")
+            btn.configure(text="Hide")
+        else:
+            entry.configure(show="*")
+            btn.configure(text="Show")
 
     def _update_strength(self, event=None):
         password=self.password_entry.get()

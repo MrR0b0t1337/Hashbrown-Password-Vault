@@ -9,7 +9,7 @@ from database.db import(
 
 class VaultScreen(ctk.CTkFrame):
     def __init__(self, parent, controller):
-        super().__init__(parent, fg_color="#003FAA")
+        super().__init__(parent, fg_color="#142F9B")
         self.controller = controller
         self.selected_id = None
 
@@ -18,7 +18,7 @@ class VaultScreen(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
 ########### Left Panel ##################
-        left = ctk.CTkFrame(self, fg_color="#003FAA", width=600, corner_radius=0)
+        left = ctk.CTkFrame(self, fg_color="#142F9B", width=600, corner_radius=0)
         left.grid(row=0, column=0, sticky="nesw")
         left.grid_propagate(False)
         left.grid_rowconfigure(2, weight=1)
@@ -27,15 +27,15 @@ class VaultScreen(ctk.CTkFrame):
         ctk.CTkLabel(
             left,
             text="Logins",
-            font=("Helvetica", 28, "bold"),
+            font=("Helvetica", 40, "bold"),
             anchor="w",
         ).grid(row=0, column=0, padx=20, pady=(20, 8), sticky="w")
         #Add button sits in the top-right corner of the left panel
         ctk.CTkButton(
             left,
             text="Add +",
-            width=90, height=34,
-            font=("Helvetica", 14, "bold"),
+            width=110, height=40,
+            font=("Helvetica", 18, "bold"),
             command=self._show_form
         ).place(relx=1.0, x=-20, y=20, anchor="ne")
 
@@ -48,7 +48,7 @@ class VaultScreen(ctk.CTkFrame):
             placeholder_text="Search logins...",
             width=460, height=44,
             textvariable=self.search_var
-        ).grid(row=1, column=0, padx=20, pady=(0, 10))
+        ).grid(row=1, column=0, padx=20, pady=(50, 10))
 
         #Scrollable login list
         self.login_list = ctk.CTkScrollableFrame(left, fg_color="transparent")
@@ -61,16 +61,16 @@ class VaultScreen(ctk.CTkFrame):
         #-self.form_panel, which shows the add/edit form
         #We swap between them using tkraise(), same pattern as rest of the screens
 
-        self.right = ctk.CTkFrame(self, fg_color="#003FAA", corner_radius=0)
+        self.right = ctk.CTkFrame(self, fg_color="#142F9B", corner_radius=0)
         self.right.grid(row=0, column=1, sticky="nesw")
         self.right.grid_rowconfigure(0, weight=1)
         self.right.grid_columnconfigure(0, weight=1)
 
-        self.detail_panel = ctk.CTkFrame(self.right, fg_color="#003FAA")
+        self.detail_panel = ctk.CTkFrame(self.right, fg_color="#142F9B")
         self.detail_panel.grid(row=0, column=0, sticky="nesw", padx=40, pady=40)
         self.detail_panel.grid_columnconfigure(0, weight=1)
 
-        self.form_panel = ctk.CTkFrame(self.right, fg_color="#003FAA")
+        self.form_panel = ctk.CTkFrame(self.right, fg_color="#142F9B")
         self.form_panel.grid(row=0, column=0, sticky="nesw", padx=40, pady=40)
         self.form_panel.grid_columnconfigure(0, weight=1)
 
@@ -80,9 +80,9 @@ class VaultScreen(ctk.CTkFrame):
 
         ctk.CTkButton(
             self,
-            text="← Main Menu",
+            text="Main Menu",
             width=160, height=40,
-            font=("Helvetica", 14),
+            font=("Helvetica", 18),
             fg_color="transparent",
             border_width=1,
             command=lambda: self.controller.show_screen("MainMenu")
@@ -116,8 +116,8 @@ class VaultScreen(ctk.CTkFrame):
             ctk.CTkLabel(
                 self.login_list,
                 text="No entries found.",
-                text_color="gray",
-                font=("Helvetica", 13)
+                text_color="white",
+                font=("Helvetica", 25, "bold")
             ).pack(pady=20)
             return
         
@@ -166,8 +166,8 @@ class VaultScreen(ctk.CTkFrame):
         ctk.CTkLabel(
             self.detail_panel,
             text="Select a login to view details",
-            font=("Helvetica", 18, "bold"),
-            text_color="gray"
+            font=("Helvetica", 25, "bold"),
+            text_color="white"
         ).place(relx=0.5, rely=0.5, anchor="center")
 
     def _on_row_click(self, credential_id: int):
@@ -283,19 +283,16 @@ class VaultScreen(ctk.CTkFrame):
         )
         value_lbl.grid(row=0, column=1, sticky="w")
 
-        visible = ctk.BooleanVar(value=False)
-
         def toggle():
-            if visible.get():
-                value_lbl.configure(text="*" * len(value))
-                visible.set(False)
-                toggle_btn.configure(text="Show")
-            else:
+            if value_lbl.cget("text") == "*" * len(value):
                 value_lbl.configure(text=value)
-                visible.set(True)
-                toggle_btn.configure(text="Hide")
+                show_btn.configure(text="Hide")
+            else:
+                value_lbl.configure(text="*" * len(value))
+                show_btn.configure(text="Show")
+            
 
-        toggle_btn = ctk.CTkButton(
+        show_btn = ctk.CTkButton(
             frame,
             text="Show",
             width=70, height=34,
@@ -304,7 +301,7 @@ class VaultScreen(ctk.CTkFrame):
             border_width=1,
             command=toggle
         )
-        toggle_btn.grid(row=0, column=2, padx=4)
+        show_btn.grid(row=0, column=2, padx=4)
 
         copy_btn = ctk.CTkButton(
             frame,
@@ -382,26 +379,26 @@ class VaultScreen(ctk.CTkFrame):
 
         show_var = ctk.BooleanVar(value=False)
 
-        def toggle_pw():
+        def toggle():
             if show_var.get():
                 pw_entry.configure(show="*")
                 show_var.set(False)
-                pw_toggle.configure(text="Show")
+                show_pw_btn.configure(text="Show")
             else:
                 pw_entry.configure(show="")
                 show_var.set(True)
-                pw_toggle.configure(text="Hide")
+                show_pw_btn.configure(text="Hide")
 
-        pw_toggle = ctk.CTkButton(
+        show_pw_btn = ctk.CTkButton(
             pw_row,
             text="Show",
             width=64, height=42,
             font=("Helvetica", 13),
             fg_color="transparent",
             border_width=1,
-            command=toggle_pw
+            command=toggle
         )
-        pw_toggle.grid(row=0, column=1, padx=(8, 0))
+        show_pw_btn.grid(row=0, column=1, padx=(8, 0))
 
         #Error Label
         error_label = ctk.CTkLabel(
@@ -485,8 +482,6 @@ class VaultScreen(ctk.CTkFrame):
 
 ### Delete Confirmation Popup Window ###
 
-#Working now but I would like to make sure it pops up in the middle of the screen
-
     def _confirm_delete(self, entry: dict):
 
         popup = ctk.CTkToplevel(self)
@@ -496,7 +491,7 @@ class VaultScreen(ctk.CTkFrame):
 
         popup_width = 400
         popup_height = 180
-        screen_width = popup.winfo_screenmmwidth()
+        screen_width = popup.winfo_screenwidth()
         screen_height = popup.winfo_screenheight()
         x = (screen_width // 2) - (popup_width // 2)
         y = (screen_height // 2) - (popup_height // 2)

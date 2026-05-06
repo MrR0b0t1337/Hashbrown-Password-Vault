@@ -45,7 +45,5 @@ def validate_password(password: str) -> list[str]:
         errors.append("Password must contain at least one number")
     if not re.search(r'[^a-zA-Z0-9]', password):
         errors.append("Password must contain at least one special character")
-    if re.search(r'[\n\r]', password):
-        errors.append("No newline characters allowed")
 
     return errors

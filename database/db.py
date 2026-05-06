@@ -133,7 +133,7 @@ def _record_failed_attempts(username: str, user_id: int, current_failures: int) 
 
     if new_count >= 5:
         from datetime import timedelta
-        locked_until = (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat()
+        locked_until = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
 
     with sqlite3.connect(USERS_DB) as conn:
         conn.execute("""
@@ -182,7 +182,7 @@ def _init_vault(username: str, master_password: str, enc_key_salt: str) -> None:
             FOR EACH ROW
             BEGIN
                 UPDATE credentials
-                SET updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+                SET updated_at = strftime('%Y-%m-%dT%H:%M:%f+00:00', 'now')
                 WHERE credential_id = OLD.credential_id;
             END     
 

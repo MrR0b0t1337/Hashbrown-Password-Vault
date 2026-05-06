@@ -1,4 +1,4 @@
-from db import init_users_db, create_user, authenticate_user
+from database.db import init_users_db, create_user, authenticate_user
 
 init_users_db()
 print("users.db created successfuly")
@@ -14,5 +14,3 @@ print("Unsuccessful authentication(bad sign-in)", result)
 
 result = authenticate_user("brady", "opensesame123")
 print("Unsuccessful authentication(bad sign-in)", result)
-
-#Test not working at the moment. Need to go back and look at db.py

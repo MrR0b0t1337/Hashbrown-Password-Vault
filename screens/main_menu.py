@@ -2,7 +2,7 @@ import customtkinter as ctk
 
 class MainMenu(ctk.CTkFrame):
     def __init__(self, parent, controller):
-            super().__init__(parent, fg_color="#003FAA")
+            super().__init__(parent, fg_color="#142F9B")
             self.controller=controller
 
             self.grid_rowconfigure(0, weight=1)

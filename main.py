@@ -21,8 +21,7 @@ class App(ctk.CTk):
         screen_height = self.winfo_screenheight()   
         self.geometry(f"{screen_width}x{screen_height}+0+0")
         self.attributes("-fullscreen", True)
-        # self.geometry("960x540")
-
+        
         self.current_user = None
         self.vault_conn = None
         self.encryption_key = None
